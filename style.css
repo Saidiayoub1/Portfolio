@@ -1745,3 +1745,294 @@ body .home{
 }
 
 
+/* Keep header above page content */
+.header { z-index: 1000; }
+
+/* Disable page scroll when menu is open */
+body.menu-open { overflow: hidden; }
+
+/* FULL-SCREEN MOBILE MENU OVERLAY */
+@media (max-width: 768px){
+  #menu-icon{
+    display: block;
+    position: relative;
+    z-index: 2001;              /* burger icon above the overlay */
+  }
+
+  .navbar{
+    position: fixed;
+    inset: 0;                   /* cover the whole viewport */
+    padding: 90px 6% 24px;      /* room for the fixed header at top */
+    background: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    /* slide from top */
+    transform: translateY(-100%);
+    transition: transform .28s ease;
+    z-index: 2000;              /* above the photo */
+  }
+  .navbar.active{ transform: translateY(0); }
+
+  .navbar a{
+    color: var(--text-color);
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  /* kill any hero overlay that could cover the menu */
+  .home .animate{ display: none !important; }
+}
+
+
+
+
+/* === MOBILE MENU: center items from the start, no left-slide flicker === */
+.header { z-index: 1000; }          /* header above content */
+body.menu-open { overflow: hidden; } /* lock page scroll when menu is open */
+
+@media (max-width: 768px){
+  #menu-icon{ position: relative; z-index: 2001; }
+
+  /* full-screen overlay menu */
+  .navbar{
+    position: fixed;
+    inset: 0;
+    padding: 90px 6% 24px;          /* space for header */
+    background: var(--bg-color);    /* or var(--main-color) if you prefer */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;        /* vertically center */
+    align-items: center;            /* horizontally center */
+    gap: 20px;
+
+    transform: translateY(-100%);   /* slide down */
+    transition: transform .28s ease;
+    z-index: 2000;
+  }
+  .navbar.active{ transform: translateY(0); }
+
+  /* OVERRIDES: kill the old left-slide animation and center links */
+  .navbar a{
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    margin: 0 !important;
+    padding: 12px 0;
+
+    transform: none !important;
+    transition: none !important;
+  }
+  .navbar.active a{
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* if you have .navbar .active-nav or .home .animate layers, don't let them cover the menu */
+  .navbar .active-nav,
+  .home .animate{ display: none !important; }
+}
+
+
+
+/* Lightbox basics (no controls) */
+body.lightbox-open { overflow: hidden; }
+.lightbox{ position: fixed; inset:0; display:none; z-index:3000; }
+.lightbox.open{ display:block; }
+.lightbox-backdrop{
+  position:absolute; inset:0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
+}
+.lightbox-content{
+  position:absolute; top:50%; left:50%;
+  transform: translate(-50%, -50%);
+  max-width: 92vw; max-height: 88vh;
+  display:grid; justify-items:center; gap:.6rem;
+}
+.lightbox-image{
+  max-width: 92vw; max-height: 74vh;
+  object-fit: contain; display:block;
+  border-radius: 12px;
+  border: .16rem solid var(--main-color);
+  box-shadow: 0 16px 40px rgba(0,0,0,.45);
+}
+.lightbox-caption{ font-size: 1.4rem; opacity:.9; text-align:center; max-width:80ch; }
+
+/* If old control styles exist, nuke them */
+.lightbox-close, .lightbox-prev, .lightbox-next { display:none !important; }
+
+
+
+/* === Global reveal timing (one speed everywhere) === */
+:root{
+  --reveal-duration: 1000ms;                 /* set your speed once */
+  --reveal-delay: 0ms;                      /* no stagger */
+  --reveal-ease: cubic-bezier(.2,.7,.2,1);  /* smooth ease */
+}
+
+/* overlays / wipes that use .animate or .animate.scroll */
+.logo .animate,
+.navbar .animate,
+#menu-icon .animate,
+.home.show-animate .animate{
+  animation-duration: var(--reveal-duration) !important;
+  animation-delay: var(--reveal-delay) !important;
+  animation-timing-function: var(--reveal-ease) !important;
+}
+
+.animate.scroll{
+  transition: width var(--reveal-duration) var(--reveal-ease) var(--reveal-delay) !important;
+}
+
+/* skills cards (remove the nth-child stagger) */
+.skills .skill-card{
+  transition: opacity var(--reveal-duration) var(--reveal-ease),
+              transform var(--reveal-duration) var(--reveal-ease) !important;
+}
+.skills .skill-card:nth-child(n){
+  transition-delay: var(--reveal-delay) !important;
+}
+
+/* (optional) if ANY other element uses per-item delays via --i, zero them */
+*[style*="--i"]{
+  animation-delay: var(--reveal-delay) !important;
+  transition-delay: var(--reveal-delay) !important;
+}
+
+/* --- FIX: stagger containers reveal their children (no placeholders) --- */
+/* One duration for everything */
+:root{ --reveal-dur: 380ms; --reveal-ease: cubic-bezier(.2,.7,.2,1); }
+
+/* If a container uses reveal-stagger, HIDE its children initially... */
+.reveal-stagger > *{
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(2px);
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    transform var(--reveal-dur) var(--reveal-ease),
+    filter var(--reveal-dur) var(--reveal-ease);
+}
+
+/* ...and SHOW them once the container is visible */
+.reveal-stagger.is-visible > *{
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* If you already added .reveal to children, make them visible via the container too */
+.reveal-stagger .reveal{ opacity: 0; transform: translateY(16px); filter: blur(2px); }
+.reveal-stagger.is-visible .reveal{ opacity: 1 !important; transform: none !important; filter: none !important; }
+
+/* --- SKILLS: override old rules that kept cards hidden --- */
+.skills .skill-card{
+  /* base visible state; container will hide/show with rules above */
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    transform var(--reveal-dur) var(--reveal-ease) !important;
+}
+.skills .skills-grid:not(.is-visible) .skill-card{
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(2px);
+}
+.skills .skills-grid.is-visible .skill-card{
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* --- PROJECTS: thumbnails reveal smoothly inside their grid --- */
+.project-media-grid > a{
+  opacity: 1; transform: none;
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    transform var(--reveal-dur) var(--reveal-ease),
+    filter var(--reveal-dur) var(--reveal-ease);
+}
+.project-media-grid:not(.is-visible) > a{
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(1.5px);
+}
+.project-media-grid.is-visible > a{
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Optional: a touch of variety for grids when revealed */
+.project-media-grid.is-visible > a:nth-child(odd){ transform: none; }
+
+
+/* 1) Kill the legacy overlay that draws the "preview" bar */
+.animate, .animate.scroll { display: none !important; }
+
+/* 2) Progressive reveal — hidden state applies ONLY when JS marks html.js-ready */
+:root{
+  --reveal-dur: 1000ms;
+  --reveal-ease: cubic-bezier(.2,.7,.2,1);
+  --reveal-dy: 14px;
+  --reveal-blur: 2px;
+}
+
+/* default: visible (so nothing is stuck if JS fails) */
+.reveal { /* no hidden styles by default */ }
+
+/* only when JS is ready, start hidden until observed */
+.js-ready .reveal{
+  opacity: 0;
+  transform: translate3d(0,var(--reveal-dy),0);
+  filter: blur(var(--reveal-blur));
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    transform var(--reveal-dur) var(--reveal-ease),
+    filter var(--reveal-dur) var(--reveal-ease);
+  will-change: opacity, transform, filter;
+}
+.js-ready .reveal.is-visible{
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Neutralize the old skills "hidden by default" block */
+.skills .skill-card{ opacity: 1 !important; transform: none !important; }
+
+/* Apply reveal ONLY when we explicitly mark a card as .reveal */
+.js-ready .skills .skill-card.reveal{
+  opacity: 0; transform: translateY(var(--reveal-dy)); filter: blur(var(--reveal-blur));
+}
+.js-ready .skills .skill-card.reveal.is-visible{
+  opacity: 1; transform: none; filter: none;
+}
+
+/* Projects: thumbnails reveal smoothly (no placeholders if JS is off) */
+.project-media-grid a{ opacity: 1; transform: none; }
+.js-ready .project-media-grid a.reveal{
+  opacity: 0; transform: translateY(var(--reveal-dy)); filter: blur(1.5px);
+  transition:
+    opacity var(--reveal-dur) var(--reveal-ease),
+    transform var(--reveal-dur) var(--reveal-ease),
+    filter var(--reveal-dur) var(--reveal-ease);
+}
+.js-ready .project-media-grid a.reveal.is-visible{
+  opacity: 1; transform: none; filter: none;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .js-ready .reveal,
+  .js-ready .reveal.is-visible{
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+}

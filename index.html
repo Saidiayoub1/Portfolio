@@ -14,6 +14,15 @@
     <!-- box icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
+<!-- Lightbox (no controls) -->
+<div class="lightbox" aria-hidden="true">
+  <div class="lightbox-backdrop"></div>
+  <figure class="lightbox-content" role="dialog" aria-modal="true" aria-label="Image preview">
+    <img class="lightbox-image" alt="">
+    <figcaption class="lightbox-caption"></figcaption>
+  </figure>
+</div>
+
 
 <body>
 
@@ -83,7 +92,7 @@
         </div>
 
         <div class="about-content">
-            <p>Give me a fuzzy idea and I’ll break it down, build a small first version, and get it into testing. I work across front end and back end because I like the mix of UX and logic. I’m an engineer by training and a builder by habit—I keep things simple, write decisions down, and ship in small steps. Always learning; that’s the fun part.
+            <p>Give me a fuzzy idea and I’ll break it down, build a small first version, and get it into testing. I work across front end and back end because I like the mix of UX and logic. I’m an engineer by training and a builder by habit.I keep things simple, write decisions down, and ship in small steps. Always learning; that’s the fun part.
                 <span class="animate scroll" style="--i:4;"></span>
             </p>
 
@@ -256,6 +265,7 @@
 
 <!-- 1) UaCortex -->
 <article class="project" id="project-plc">
+  
   <figure class="project-media-grid">
   <a href="images/HomePage.png" target="_blank" rel="noopener">
     <img src="images/HomePage.png" alt="PLC desktop app — Home screen" loading="lazy">
