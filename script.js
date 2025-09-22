@@ -89,15 +89,20 @@ menuIcon?.setAttribute('aria-expanded', 'false');
   }
 
   // Intercept clicks on project images (don’t open new tab)
-  document.querySelectorAll('.project-media-grid').forEach(grid => {
-    grid.addEventListener('click', (e) => {
-      const a = e.target.closest('a');
-      if (!a) return;
-      e.preventDefault();
-      const img = a.querySelector('img');
-      openLightbox(a.getAttribute('href'), img?.getAttribute('alt') || '');
-    });
+ // Intercept ONLY image clicks inside the media grid
+document.querySelectorAll('.project-media-grid').forEach(grid => {
+  grid.addEventListener('click', (e) => {
+    const img = e.target.closest('img');
+    if (!img || !grid.contains(img)) return;   // ignore clicks that aren't on an image
+
+    const link = img.closest('a');
+    if (!link) return;
+
+    e.preventDefault();                         // block the anchor only for images
+    openLightbox(link.getAttribute('href'), img.getAttribute('alt') || '');
   });
+});
+
 
   // Close when clicking backdrop or outside content
   lightbox.addEventListener('click', (e) => {
@@ -210,12 +215,14 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
 
 // Helper: add .reveal and observe
+// Helper: add .reveal and observe
 function addReveal(selector){
   document.querySelectorAll(selector).forEach(el => {
     el.classList.add('reveal');
     revealObserver.observe(el);
   });
 }
+
 
 // WHAT to reveal (keeps your markup; just selects existing parts)
 addReveal('.about .heading');
